@@ -436,12 +436,12 @@ def log_drive_report():
 
 
 def online_offline_drive(drive, onoffline):
-    log.debug(self,f'online_offline_drive() called with [{drive}] , [{onoffline}]')
+    log.debug(f'online_offline_drive() called with [{drive}] , [{onoffline}]')
     if get_device_info_by_drive_number(drive) == None:
         print()
         print(f'{red}WARNING{nc}: {blue}{drive}{nc} does not exist or is not mounted on this system!')
         print()
-        log.debug(self,f'Drive: {drive} does not exist or is not mounted on this system!')
+        log.debug(f'Drive: {drive} does not exist or is not mounted on this system!')
     else:
         if onoffline == 'offline':
             offlined_drives = []
@@ -451,7 +451,7 @@ def online_offline_drive(drive, onoffline):
                     print()
                     print(f'Drive: {blue}{drive}{nc} Already in {red}OFFLINE{nc} mode! No action taken.')
                     print()
-                    log.debug(self,f'Drive: {drive} Already in offline mode!')
+                    log.debug(f'Drive: {drive} Already in offline mode!')
                 else:
                     offlined_drives.append(drive)
                     with open('offlined_drives', 'w') as offlined_drive_list:
@@ -459,7 +459,7 @@ def online_offline_drive(drive, onoffline):
                         print()
                         print(f'Drive: {blue}{drive}{nc} Put into {red}OFFLINE{nc} mode! Plots will not be written to this drive!')
                         print()
-                        log.debug(self,f'Drive: {drive} Put into OFFLINE mode! Plots will not be written to this drive!')
+                        log.debug(f'Drive: {drive} Put into OFFLINE mode! Plots will not be written to this drive!')
         elif onoffline == 'online':
             offlined_drives = []
             with open('offlined_drives', 'r') as offlined_drives_list:
@@ -471,12 +471,12 @@ def online_offline_drive(drive, onoffline):
                         print()
                         print(f'Drive: {blue}{drive}{nc} Put into {green}ONLINE{nc} mode! Plots will now be written to this drive!')
                         print()
-                        log.debug(self,f'Drive: {drive} Put into ONLINE mode! Plots will now be written to this drive!')
+                        log.debug(f'Drive: {drive} Put into ONLINE mode! Plots will now be written to this drive!')
                 else:
                     print()
                     print(f'Drive: {blue}{drive}{nc} was not in {red}OFFLINE{nc} mode! No action taken.')
                     print()
-                    log.debug(self,f'Drive: {drive} was not offline!')
+                    log.debug(f'Drive: {drive} was not offline!')
         elif onoffline == 'check':
             with open('offlined_drives', 'r') as offlined_drives_list:
                 offlined_drives = [current_drives.rstrip() for current_drives in offlined_drives_list.readlines()]
@@ -496,21 +496,21 @@ def update_receive_plot():
     here. See TODO: Update to use netcat native to python.
     """
 
-    log.debug(self,"update_receive_plot() Started")
+    log.debug("update_receive_plot() Started")
     total_serverwide_plots = get_all_available_system_space('used')[1]
-    log.debug(self,f'Total Serverwide Plots: {total_serverwide_plots}')
+    log.debug(f'Total Serverwide Plots: {total_serverwide_plots}')
     # First determine if there is a remote file transfer in process. If there is, pass until it is done:
     if os.path.isfile(read_config_data('plot_manager_config', 'remote_transfer', 'remote_transfer_active', False)):
-        log.debug(self,'Remote Transfer in Progress, will try again soon!')
+        log.debug('Remote Transfer in Progress, will try again soon!')
         quit()
     else:
         current_plotting_drive = read_config_data('plot_manager_config', 'plotting_drives', 'current_plotting_drive', False)
         if current_plotting_drive == get_plot_drive_to_use():
-            log.debug(self,f'Currently Configured Plot Drive: {current_plotting_drive}')
-            log.debug(self,f'System Selected Plot Drive:      {get_plot_drive_to_use()}')
-            log.debug(self,'Configured and Selected Drives Match!')
-            log.debug(self,f'No changes necessary to {receive_script}')
-            log.debug(self,
+            log.debug(f'Currently Configured Plot Drive: {current_plotting_drive}')
+            log.debug(f'System Selected Plot Drive:      {get_plot_drive_to_use()}')
+            log.debug('Configured and Selected Drives Match!')
+            log.debug(f'No changes necessary to {receive_script}')
+            log.debug(
                 f'Plots left available on configured plotting drive: {get_drive_info("space_free_plots_by_mountpoint", current_plotting_drive)}')
         else:
             send_new_plot_disk_email()  # This is the full Plot drive report. This is in addition to the generic email sent by the
@@ -641,12 +641,12 @@ def send_email(recipient, subject, body):
     """
     try:
         subprocess.run(['mail', '-s', subject, recipient], input=body, encoding='utf-8')
-        log.debug(self,f"Email Notification Sent: Subject: {subject}, Recipient: {recipient}, Message: {body}")
+        log.debug(f"Email Notification Sent: Subject: {subject}, Recipient: {recipient}, Message: {body}")
     except subprocess.CalledProcessError as e:
-        log.debug(self,f'send_email error: {e}')
+        log.debug(f'send_email error: {e}')
         capture_exception(e)
     except Exception as e:
-        log.debug(self,f'send_email: Unknown Error! Email not sent.')
+        log.debug(f'send_email: Unknown Error! Email not sent.')
         capture_exception(e)
 
 
@@ -656,12 +656,12 @@ def send_push_notification(title, message):
     try:
         pb = Pushbullet(system_info.pushbilletAPI)
         push = pb.push_note(title, message)
-        log.debug(self,f"Pushbullet Notification Sent: {title} - {message}")
+        log.debug(f"Pushbullet Notification Sent: {title} - {message}")
     except pb_errors.InvalidKeyError as e:
-        log.debug(self,f'Pushbullet Exception: Invalid API Key! Message not sent.')
+        log.debug(f'Pushbullet Exception: Invalid API Key! Message not sent.')
         capture_exception(e)
     except Exception as e:
-        log.debug(self,f'Pushbullet Exception: Unknown Pushbullet Error: {e}. Message not sent.')
+        log.debug(f'Pushbullet Exception: Unknown Pushbullet Error: {e}. Message not sent.')
         capture_exception(e)
 
 
@@ -670,18 +670,18 @@ def send_sms_notification(body, phone_number):
     try:
         client = Client(system_info.twilio_account, system_info.twilio_token)
         message = client.messages.create(to=phone_number, from_=system_info.twilio_from, body=body)
-        log.debug(self,f"SMS Notification Sent: {body}.")
+        log.debug(f"SMS Notification Sent: {body}.")
     except TwilioRestException as e:
-        log.debug(self,f'Twilio Exception: {e}. Message not sent.')
+        log.debug(f'Twilio Exception: {e}. Message not sent.')
         capture_exception(e)
     except Exception as e:
-        log.debug(self,f'Twilio Exception: {e}. Message not sent.')
+        log.debug(f'Twilio Exception: {e}. Message not sent.')
         capture_exception(e)
 
 
 def notify(title, message):
     """ Notify system for email, pushbullet and sms (via Twilio)"""
-    log.debug(self,f'notify() called with Title: {title} and Message: {message}')
+    log.debug(f'notify() called with Title: {title} and Message: {message}')
     if (read_config_data('plot_manager_config', 'notifications', 'alerting', True)):
         if (read_config_data('plot_manager_config', 'notifications', 'pb', True)):
             send_push_notification(title, message)
@@ -709,14 +709,14 @@ def send_template_email(template, recipient, subject, **kwargs):
 # 01 00 * * * /usr/bin/python3 /rxoot/plot_manager/drive_manager.py -ud >/dev/null 2>&1
 # 02 00 * * * /usr/bin/python3 /rxoot/plot_manager/drive_manager.py -dr >/dev/null 2>&1
 def send_daily_email():
-    log.debug(self,'send_daily_email() Started')
+    log.debug('send_daily_email() Started')
     send_daily_update_email()
     log.info('Daily Update Email Sent!')
 
 def send_new_plot_notification():
-    log.debug(self,'send_new_plot_notification() Started')
+    log.debug('send_new_plot_notification() Started')
     if os.path.isfile('new_plot_received'):
-        log.debug(self,'New Plot Received')
+        log.debug('New Plot Received')
         if read_config_data('plot_manager_config', 'notifications', 'per_plot', True):
             notify('New Plot Received', 'New Plot Received')
         os.remove('new_plot_received')
