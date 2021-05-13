@@ -18,7 +18,7 @@ VERSION = "0.5 (2021-04-22)"
 
 import os
 import sys
-main_path = '/home/pw/chia_plot_manager/'
+main_path = "/home/pw/chia_plot_manager/chianas/"
 sys.path.append(main_path)
 import logging
 import psutil
