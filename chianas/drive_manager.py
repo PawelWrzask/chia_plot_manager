@@ -59,7 +59,10 @@ VERSION = "0.6 (2021-04-22)"
 
 import os
 import sys
+
+mount_path = "/mnt/usb"
 main_path = "/home/pw/chia_plot_manager"
+
 sys.path.append(main_path)
 import subprocess
 import shutil
@@ -271,7 +274,7 @@ def dev_test(drive):
 
 def get_drive_by_mountpoint(mountpoint):
     """
-    This accepts a mountpoint ('/mnt/enclosure0/rear/column2/drive32') and returns the drive:
+    This accepts a mountpoint ('/mnt/x/rear/column2/drive32') and returns the drive:
     drive32
     """
     return (mountpoint.split("/")[5])
@@ -279,11 +282,11 @@ def get_drive_by_mountpoint(mountpoint):
 def get_mountpoint_by_drive_number(drive):
     """
     This accepts a drive number (drive0) and returns the device assignment: /dev/sda1 and mountpoint:
-    /mnt/enclosure0/front/column0/drive0
+    /mnt/x0/front/column0/drive0
     """
     partitions = psutil.disk_partitions(all=False)
     for p in partitions:
-        if p.device.startswith('/dev/sd') and p.mountpoint.startswith('/mnt/enclosure') and p.mountpoint.endswith(drive):
+        if p.device.startswith('/dev/sd') and p.mountpoint.startswith(mount_path) and p.mountpoint.endswith(drive):
             return [(p.mountpoint)]
 
 
@@ -293,7 +296,7 @@ def get_device_info_by_drive_number(drive):
     """
     partitions = psutil.disk_partitions(all=False)
     for p in partitions:
-        if p.device.startswith('/dev/sd') and p.mountpoint.startswith('/mnt/enclosure') and p.mountpoint.endswith(drive):
+        if p.device.startswith('/dev/sd') and p.mountpoint.startswith('mount_path) and p.mountpoint.endswith(drive):
             return [(p.mountpoint, p.device)]
 
 
@@ -318,13 +321,13 @@ def get_mountpoint_by_device(device):
 def get_list_of_plot_drives():
     """
     Return list of tuples of all available plot drives on the system and the device assignment
-    [('/mnt/enclosure0/front/column0/drive3', '/dev/sde1')]
+    [('/mnt/x0/front/column0/drive3', '/dev/sde1')]
     ===> Currently Unused
     """
     partitions = psutil.disk_partitions(all=False)
     mountpoint = []
     for p in partitions:
-        if p.device.startswith('/dev/sd') and p.mountpoint.startswith('/mnt/enclosure'):
+        if p.device.startswith('/dev/sd') and p.mountpoint.startswith(mount_path):
             mountpoint.append((p.mountpoint, p.device, p.fstype))
     return mountpoint
 
@@ -343,7 +346,7 @@ def get_all_available_system_space(type):
     partitions = psutil.disk_partitions(all=False)
     drive_space_available = []
     for p in partitions:
-        if p.device.startswith('/dev/sd') and p.mountpoint.startswith('/mnt/enclosure'):
+        if p.device.startswith('/dev/sd') and p.mountpoint.startswith(mount_path):
             if type == 'all':
                 drive_space_available.append((p.mountpoint, shutil.disk_usage(p.mountpoint)))
             if type == 'total':
@@ -358,7 +361,7 @@ def get_all_available_system_space(type):
 def get_plot_drive_with_available_space():
     """
     This looks at all available plot drives that start with /dev/sd and include
-    /mnt/enclosure in the mount path (this covers all of my plot drives), it then
+    /mnt/x in the mount path (this covers all of my plot drives), it then
     looks for any drive that has enough space for at least one plot (k32), sorts
     that list based on the /dev/sdx sorting and then returns the mountpoint and
     the device of each drive.
@@ -366,7 +369,7 @@ def get_plot_drive_with_available_space():
     """
     available_drives = []
     for part in psutil.disk_partitions(all=False):
-        if part.device.startswith('/dev/sd') and part.mountpoint.startswith('/mnt/enclosure') and get_drive_info(
+        if part.device.startswith('/dev/sd') and part.mountpoint.startswith(mount_path) and get_drive_info(
                 'space_free_plots_by_mountpoint', part.mountpoint) >= 1:
             available_drives.append((part.mountpoint, part.device))
     return (sorted(available_drives, key=lambda x: x[1]))
@@ -375,7 +378,7 @@ def get_plot_drive_with_available_space():
 def get_plot_drive_to_use():
     """
         This looks at all available plot drives that start with /dev/sd and include
-        /mnt/enclosure in the mount path (this covers all of my plot drives), it then
+        /mnt/x in the mount path (this covers all of my plot drives), it then
         looks for any drive that has enough space for at least one plot (k32), sorts
         that list based on the drive# sorting (drive0, drive10, etc) sorting and then
         returns the mountpoint of the device we want to use. Basically the same as above
@@ -388,7 +391,7 @@ def get_plot_drive_to_use():
     available_drives = []
     for part in psutil.disk_partitions(all=False):
         if part.device.startswith('/dev/sd') \
-                and part.mountpoint.startswith('/mnt/enclosure') \
+                and part.mountpoint.startswith(mount_path) \
                 and get_drive_info('space_free_plots_by_mountpoint', part.mountpoint) >= 1 \
                 and get_drive_by_mountpoint(part.mountpoint) not in offlined_drives:
             drive = get_drive_by_mountpoint(part.mountpoint)
@@ -401,7 +404,7 @@ def get_sorted_drive_list():
     """
     available_drives = []
     for part in psutil.disk_partitions(all=False):
-        if part.device.startswith('/dev/sd') and part.mountpoint.startswith('/mnt/enclosure'):
+        if part.device.startswith('/dev/sd') and part.mountpoint.startswith(mount_path):
             drive=get_drive_by_mountpoint(part.mountpoint)
             available_drives.append((part.mountpoint, part.device, drive))
     return natsorted(available_drives)
