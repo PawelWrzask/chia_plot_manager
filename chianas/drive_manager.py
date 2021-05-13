@@ -296,7 +296,7 @@ def get_device_info_by_drive_number(drive):
     """
     partitions = psutil.disk_partitions(all=False)
     for p in partitions:
-        if p.device.startswith('/dev/sd') and p.mountpoint.startswith('mount_path) and p.mountpoint.endswith(drive):
+        if p.device.startswith('/dev/sd') and p.mountpoint.startswith(mount_path) and p.mountpoint.endswith(drive):
             return [(p.mountpoint, p.device)]
 
 
