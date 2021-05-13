@@ -60,8 +60,8 @@ VERSION = "0.6 (2021-04-22)"
 import os
 import sys
 
-mount_path = "/mnt/usb"
-main_path = "/home/pw/chia_plot_manager"
+mount_path = "/mnt/usb/"
+main_path = '/home/pw/chia_plot_manager/'
 
 sys.path.append(main_path)
 import subprocess
