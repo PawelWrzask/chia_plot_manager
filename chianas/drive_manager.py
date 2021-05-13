@@ -714,7 +714,7 @@ def send_daily_email():
     log.info('Daily Update Email Sent!')
 
 def send_new_plot_notification():
-    log.debug('send_new_plot_notification() Started', 'aaa')
+    log.debug('send_new_plot_notification() Started')
     if os.path.isfile('new_plot_received'):
         log.debug('New Plot Received')
         if read_config_data('plot_manager_config', 'notifications', 'per_plot', True):
