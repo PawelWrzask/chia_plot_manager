@@ -50,6 +50,7 @@ def setup_logging(default_path=main_path+'logging.yaml', default_level=logging.C
 
 def read_logging_config(file, section, status):
     pathname = main_path + file
+    print(pathname)
     config.read(pathname)
     if status == "logging":
         current_status = config.getboolean(section, status)
