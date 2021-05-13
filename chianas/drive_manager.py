@@ -61,7 +61,7 @@ import os
 import sys
 
 mount_path = "/mnt/usb/"
-main_path = '/home/pw/chia_plot_manager/'
+main_path = "/home/pw/chia_plot_manager/chianas/"
 
 sys.path.append(main_path)
 import subprocess
