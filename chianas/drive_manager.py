@@ -59,8 +59,8 @@ VERSION = "0.6 (2021-04-22)"
 
 import os
 import sys
-
-sys.path.append('/root/plot_manager')
+main_path = "/home/pw/chia_plot_manager"
+sys.path.append(main_path)
 import subprocess
 import shutil
 import psutil
@@ -108,8 +108,8 @@ from sentry_sdk import capture_exception
 nas_server = 'chianas01'
 plot_size_k = 108995911228
 plot_size_g = 101.3623551
-receive_script = '/root/plot_manager/receive_plot.sh'
-chia_log_file = '/root/.chia/mainnet/log/debug.log'
+receive_script = main_path + 'receive_plot.sh'
+chia_log_file = '/home/pw/.chia/mainnet/log/debug.log'
 
 # Date and Time Stuff
 today = datetime.today().strftime('%A').lower()
@@ -204,7 +204,7 @@ def get_offlined_drives():
 # If we are expecting a boolean back pass True/1 for bool,
 # otherwise False/0
 def read_config_data(file, section, item, bool):
-    pathname = '/root/plot_manager/' + file
+    pathname = main_path + file
     config.read(pathname)
     if bool:
         return config.getboolean(section, item)
@@ -213,7 +213,7 @@ def read_config_data(file, section, item, bool):
 
 
 def update_config_data(file, section, item, value):
-    pathname = '/root/plot_manager/' + file
+    pathname = main_path + file
     config.read(pathname)
     cfgfile = open(pathname, 'w')
     config.set(section, item, value)
@@ -703,8 +703,8 @@ def send_template_email(template, recipient, subject, **kwargs):
     send_email(recipient, subject, template.render(**kwargs))
 
 # This function called from crontab. First run the daily update (-ud) then (-dr):
-# 01 00 * * * /usr/bin/python3 /root/plot_manager/drive_manager.py -ud >/dev/null 2>&1
-# 02 00 * * * /usr/bin/python3 /root/plot_manager/drive_manager.py -dr >/dev/null 2>&1
+# 01 00 * * * /usr/bin/python3 /rxoot/plot_manager/drive_manager.py -ud >/dev/null 2>&1
+# 02 00 * * * /usr/bin/python3 /rxoot/plot_manager/drive_manager.py -dr >/dev/null 2>&1
 def send_daily_email():
     log.debug('send_daily_email() Started')
     send_daily_update_email()
