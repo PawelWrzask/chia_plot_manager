@@ -10,7 +10,7 @@ VERSION = "V.1 (2021-03-15)"
 
 import sys
 import os
-main_path = "/home/pw/chia_plot_manager"
+main_path = "/home/pw/chia_plot_manager/"
 sys.path.append(main_path)
 import yaml
 import logging.config
